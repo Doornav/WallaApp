@@ -126,12 +126,12 @@ export default function App() {
               <Stack.Screen
                 name="Login"
                 component={LoginScreen}
-                options={{ title: 'Sign In' }}
+                options={{ headerShown: false }}
               />
               <Stack.Screen
                 name="Signup"
                 component={SignupScreen}
-                options={{ title: 'Create Account' }}
+                options={{ headerShown: false }}
               />
             </>
           ) : (

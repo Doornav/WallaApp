@@ -4,12 +4,12 @@ import {
     View,
     Text,
     SafeAreaView,
-    StatusBar,
-    TouchableOpacity
+    StatusBar
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../App';
-import { COLORS, FONTS } from '../styles/theme';
+import Button from '../components/Button';
+import { COLORS, TYPOGRAPHY } from '../styles/theme';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
@@ -23,28 +23,27 @@ const Welcome: React.FC<Props> = ({ navigation }) => {
             <StatusBar barStyle="dark-content" />
 
             <View style={styles.headerContainer}>
-                <Text style={styles.welcomeText}>Welcome to Walla</Text>
+                <Text style={{ ...TYPOGRAPHY.h1, alignSelf: 'center' }}>Welcome to Walla</Text>
             </View>
 
             <View style={styles.contentContainer}>
-                <Text style={styles.taglineText}>
+                <Text style={{ ...TYPOGRAPHY.h1, lineHeight: 42, paddingTop: 10 }}>
                     Empowering Communities with Affordable, Group-based Wholesale Delivery
                 </Text>
 
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={styles.loginButton}
+                    <Button
+                        title="Log In"
                         onPress={() => navigation.navigate('Login')}
-                    >
-                        <Text style={styles.loginButtonText}>Log In</Text>
-                    </TouchableOpacity>
+                        variant='primary'
+                    />
 
-                    <TouchableOpacity
-                        style={styles.signupButton}
+                    <Button
+                        title="Sign up"
+                        variant="secondary"
                         onPress={() => navigation.navigate('Signup')}
-                    >
-                        <Text style={styles.signupButtonText}>Sign up</Text>
-                    </TouchableOpacity>
+
+                    />
                 </View>
             </View>
         </SafeAreaView>
@@ -54,61 +53,28 @@ const Welcome: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.secondary,
+        backgroundColor: COLORS.background,
     },
     headerContainer: {
-        paddingHorizontal: 24,
-        paddingTop: 20,
+        paddingTop: 50,
         paddingBottom: 24,
     },
-    welcomeText: {
-        fontFamily: FONTS.bold,
-        fontSize: 32,
-        color: '#333',
-    },
+
     contentContainer: {
         flex: 1,
         backgroundColor: COLORS.primary,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
+        borderTopLeftRadius: 56,
+        borderTopRightRadius: 56,
         padding: 24,
         justifyContent: 'space-between',
+        marginBottom: -40,
     },
-    taglineText: {
-        fontFamily: FONTS.bold,
-        fontSize: 36,
-        color: '#000',
-        marginTop: 40,
-        lineHeight: 44,
-    },
+
     buttonContainer: {
         marginBottom: 40,
         gap: 16,
     },
-    loginButton: {
-        backgroundColor: '#222',
-        borderRadius: 28,
-        height: 56,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    loginButtonText: {
-        fontFamily: FONTS.medium,
-        fontSize: 18,
-        color: '#fff',
-    },
-    signupButton: {
-        backgroundColor: COLORS.secondary,
-        borderRadius: 28,
-        height: 56,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    signupButtonText: {
-        fontFamily: FONTS.medium,
-        fontSize: 18,
-        color: '#000',
-    },
+
 });
 
 export default Welcome;

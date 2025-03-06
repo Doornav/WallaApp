@@ -5,38 +5,34 @@ import {
     Text,
     ActivityIndicator,
     ViewStyle,
-    TextStyle,
+
     StyleProp
 } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../styles/theme';
+import { COLORS, SPACING, BORDER_RADIUS, FONTS } from '../styles/theme';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline';
-type ButtonSize = 'small' | 'medium' | 'large';
 
-interface WallaButtonProps {
+interface ButtonProps {
     title: string;
     onPress: () => void;
-    variant?: ButtonVariant;
-    size?: ButtonSize;
+    variant?: 'primary' | 'secondary' | 'text';
+    size?: 'small' | 'medium' | 'large';
     disabled?: boolean;
     loading?: boolean;
     fullWidth?: boolean;
     icon?: React.ReactNode;
     style?: StyleProp<ViewStyle>;
-    textStyle?: StyleProp<TextStyle>;
 }
 
-const WallaButton: React.FC<WallaButtonProps> = ({
+const Button: React.FC<ButtonProps> = ({
     title,
     onPress,
-    variant = 'primary',
-    size = 'medium',
+    variant,
+    size,
     disabled = false,
     loading = false,
     fullWidth = false,
     icon,
     style,
-    textStyle,
 }) => {
     // Determine the button style based on variant
     const getButtonStyle = () => {
@@ -45,8 +41,8 @@ const WallaButton: React.FC<WallaButtonProps> = ({
                 return styles.primaryButton;
             case 'secondary':
                 return styles.secondaryButton;
-            case 'outline':
-                return styles.outlineButton;
+            case 'text':
+                return styles.textButton;
             default:
                 return styles.primaryButton;
         }
@@ -58,7 +54,8 @@ const WallaButton: React.FC<WallaButtonProps> = ({
             case 'primary':
                 return styles.primaryText;
             case 'secondary':
-            case 'outline':
+                return styles.secondaryText;
+            case 'text':
                 return styles.secondaryText;
             default:
                 return styles.primaryText;
@@ -76,20 +73,6 @@ const WallaButton: React.FC<WallaButtonProps> = ({
                 return styles.largeButton;
             default:
                 return styles.mediumButton;
-        }
-    };
-
-    // Determine text size style
-    const getTextSizeStyle = () => {
-        switch (size) {
-            case 'small':
-                return styles.smallText;
-            case 'medium':
-                return styles.mediumText;
-            case 'large':
-                return styles.largeText;
-            default:
-                return styles.mediumText;
         }
     };
 
@@ -112,10 +95,7 @@ const WallaButton: React.FC<WallaButtonProps> = ({
     ];
 
     const textStyles = [
-        styles.text,
         getTextStyle(),
-        getTextSizeStyle(),
-        textStyle,
     ];
 
     return (
@@ -145,22 +125,21 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: BORDER_RADIUS.m,
+        borderRadius: BORDER_RADIUS.round,
+        height: 60,
     },
 
     // Variant Styles
     primaryButton: {
-        backgroundColor: COLORS.primary,
-        borderWidth: 0,
+        backgroundColor: COLORS.black,
     },
     secondaryButton: {
         backgroundColor: COLORS.secondary,
-        borderWidth: 0,
+
     },
-    outlineButton: {
+    textButton: {
         backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderColor: COLORS.primary,
+
     },
 
     // Size Styles
@@ -180,31 +159,18 @@ const styles = StyleSheet.create({
         minHeight: 56,
     },
 
-    // Text Styles
-    text: {
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
     primaryText: {
-        color: COLORS.secondary,
+        fontFamily: FONTS.semiBold,
+        fontSize: 20,
+        color: COLORS.textLight
+
     },
     secondaryText: {
-        color: COLORS.primary,
+        fontFamily: FONTS.semiBold,
+        fontSize: 20,
+        color: COLORS.text
     },
 
-    // Text Size Styles
-    smallText: {
-        ...TYPOGRAPHY.caption,
-        fontWeight: 'bold',
-    },
-    mediumText: {
-        ...TYPOGRAPHY.body,
-        fontWeight: 'bold',
-    },
-    largeText: {
-        ...TYPOGRAPHY.h3,
-        fontWeight: 'bold',
-    },
 
     // State Styles
     disabledButton: {
@@ -217,4 +183,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default WallaButton;
+export default Button;

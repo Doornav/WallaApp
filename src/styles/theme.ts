@@ -10,11 +10,13 @@ export const FONTS = {
 export const COLORS = {
     background: '#EBE5DD',
     primary: '#A9411D',
-    secondary: '#FFF8EF',
+    secondary: '#F5F3F0',
+    black: "#181516",
 
     // Additional complementary colors
-    text: '#3A3238',
-    textLight: '#6D6365',
+    text: '#101010',
+    textLight: '#FFF8EF',
+    textSecondary: "#383838",
     success: '#587B46',
     error: '#C62828',
     warning: '#E59D23',
@@ -22,7 +24,7 @@ export const COLORS = {
 
     // UI element colors
     cardBackground: '#FFFFFF',
-    border: '#D8CFC7',
+    border: '#555555',
     icon: '#A9411D',
 };
 
@@ -39,7 +41,7 @@ export const SPACING = {
 // Define border radius constants
 export const BORDER_RADIUS = {
     s: 4,
-    m: 8,
+    m: 10,
     l: 16,
     xl: 24,
     round: 100, // For circular elements
@@ -48,8 +50,8 @@ export const BORDER_RADIUS = {
 // Define typography styles
 export const TYPOGRAPHY = {
     h1: {
-        fontFamily: FONTS.bold,
-        fontSize: 28,
+        fontFamily: FONTS.medium,
+        fontSize: 33,
         lineHeight: 34,
     },
     h2: {
