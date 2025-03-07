@@ -5,11 +5,9 @@ import {
     Text,
     ActivityIndicator,
     ViewStyle,
-
-    StyleProp
+    StyleProp,
 } from 'react-native';
 import { COLORS, SPACING, BORDER_RADIUS, FONTS } from '../styles/theme';
-
 
 interface ButtonProps {
     title: string;
@@ -23,18 +21,40 @@ interface ButtonProps {
     style?: StyleProp<ViewStyle>;
 }
 
+// Define a map that ties button container paddings/minHeight and text fontSize together
+const SIZE_MAP = {
+    small: {
+        paddingVertical: SPACING.xs,
+        paddingHorizontal: SPACING.m,
+        minHeight: 32,
+        fontSize: 16,
+    },
+    medium: {
+        paddingVertical: SPACING.s,
+        paddingHorizontal: SPACING.l,
+        minHeight: 44,
+        fontSize: 20,
+    },
+    large: {
+        paddingVertical: SPACING.m,
+        paddingHorizontal: SPACING.xl,
+        minHeight: 56,
+        fontSize: 24,
+    },
+};
+
 const Button: React.FC<ButtonProps> = ({
     title,
     onPress,
-    variant,
-    size,
+    variant = 'primary',
+    size = 'medium',
     disabled = false,
     loading = false,
     fullWidth = false,
     icon,
     style,
 }) => {
-    // Determine the button style based on variant
+    // Determine button background based on variant
     const getButtonStyle = () => {
         switch (variant) {
             case 'primary':
@@ -48,7 +68,7 @@ const Button: React.FC<ButtonProps> = ({
         }
     };
 
-    // Determine text color based on variant
+    // Determine text style based on variant
     const getTextStyle = () => {
         switch (variant) {
             case 'primary':
@@ -62,33 +82,21 @@ const Button: React.FC<ButtonProps> = ({
         }
     };
 
-    // Determine size style
-    const getSizeStyle = () => {
-        switch (size) {
-            case 'small':
-                return styles.smallButton;
-            case 'medium':
-                return styles.mediumButton;
-            case 'large':
-                return styles.largeButton;
-            default:
-                return styles.mediumButton;
-        }
-    };
+    // Apply a disabled style if needed
+    const getDisabledStyle = () => (disabled ? styles.disabledButton : {});
 
-    // Determine disabled style
-    const getDisabledStyle = () => {
-        if (disabled) {
-            return styles.disabledButton;
-        }
-        return {};
-    };
+    // Get size-related values
+    const sizeStyles = SIZE_MAP[size] || SIZE_MAP.medium;
 
-    // Combine styles
+    // Combine styles: note the inline size values drive both the container and the text
     const buttonStyles = [
         styles.button,
         getButtonStyle(),
-        getSizeStyle(),
+        {
+            paddingVertical: sizeStyles.paddingVertical,
+            paddingHorizontal: sizeStyles.paddingHorizontal,
+            minHeight: sizeStyles.minHeight,
+        },
         getDisabledStyle(),
         fullWidth && styles.fullWidth,
         style,
@@ -96,6 +104,9 @@ const Button: React.FC<ButtonProps> = ({
 
     const textStyles = [
         getTextStyle(),
+        {
+            fontSize: sizeStyles.fontSize,
+        },
     ];
 
     return (
@@ -126,58 +137,30 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: BORDER_RADIUS.round,
-        height: 60,
     },
-
     // Variant Styles
     primaryButton: {
         backgroundColor: COLORS.black,
     },
     secondaryButton: {
         backgroundColor: COLORS.secondary,
-
     },
     textButton: {
         backgroundColor: 'transparent',
-
     },
-
-    // Size Styles
-    smallButton: {
-        paddingVertical: SPACING.xs,
-        paddingHorizontal: SPACING.m,
-        minHeight: 32,
-    },
-    mediumButton: {
-        paddingVertical: SPACING.s,
-        paddingHorizontal: SPACING.l,
-        minHeight: 44,
-    },
-    largeButton: {
-        paddingVertical: SPACING.m,
-        paddingHorizontal: SPACING.xl,
-        minHeight: 56,
-    },
-
     primaryText: {
         fontFamily: FONTS.semiBold,
-        fontSize: 20,
-        color: COLORS.textLight
-
+        color: COLORS.textLight,
     },
     secondaryText: {
         fontFamily: FONTS.semiBold,
-        fontSize: 20,
-        color: COLORS.text
+        color: COLORS.text,
     },
-
-
-    // State Styles
+    // Disabled state style
     disabledButton: {
         opacity: 0.6,
     },
-
-    // Width Style
+    // Full width style
     fullWidth: {
         width: '100%',
     },

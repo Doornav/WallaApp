@@ -1,7 +1,6 @@
-// src/screens/main/ProfileScreen.tsx
 import React, { useContext } from 'react';
 import { View, StyleSheet, Text, SafeAreaView } from 'react-native';
-import { AuthContext } from '../../App';
+import { AuthContext } from '../contexts/AuthContext';
 import WallaButton from '../components/Button';
 import { COLORS, TYPOGRAPHY, SPACING } from '../styles/theme';
 

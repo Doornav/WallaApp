@@ -25,7 +25,7 @@ interface HeaderProps {
 }
 
 
-const WallaHeader: React.FC<HeaderProps> = ({
+const Header: React.FC<HeaderProps> = ({
     title = 'Near Me',
     subtitle,
     showBackButton = true,
@@ -69,9 +69,9 @@ const WallaHeader: React.FC<HeaderProps> = ({
 
             {/* Center (Title and Subtitle) */}
             <View style={styles.centerContainer}>
-                <Text style={[styles.title, titleStyle]}>{title}</Text>
+                <Text style={[titleStyle]}>{title}</Text>
                 {subtitle && (
-                    <Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text>
+                    <Text style={[subtitleStyle]}>{subtitle}</Text>
                 )}
             </View>
 
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: SPACING.m,
         paddingHorizontal: SPACING.s,
-        backgroundColor: COLORS.secondary,
+        backgroundColor: COLORS.background,
         height: 70,
         paddingInline: 20
     },
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     centerContainer: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-around'
     },
     rightContainer: {
         flex: 1,
@@ -134,13 +134,8 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 2,
     },
-    title: {
-        ...TYPOGRAPHY.subtitle,
-    },
-    subtitle: {
-        ...TYPOGRAPHY.bodySmall,
-        color: COLORS.textLight,
-    },
+
+
 });
 
-export default WallaHeader;
+export default Header;

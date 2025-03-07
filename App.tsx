@@ -1,41 +1,125 @@
-import React, { useState, useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// App.tsx
+import React, { useState, useEffect, useContext } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import * as Font from 'expo-font';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-// Import your screen components
+// Import AuthProvider and AuthContext
+import { AuthProvider, AuthContext } from './src/contexts/AuthContext';
+
+// Import screens
 import WelcomeScreen from './src/screens/Welcome';
-import LoginScreen from './src/screens/Login';
-import SignupScreen from './src/screens/Signup';
+import PhoneNumberScreen from './src/screens/PhoneNumber';
 import MainTabNavigator from './src/navigation/MainTabNavigator';
-
+import EmailScreen from './src/screens/Email';
+import NameScreen from './src/screens/Name';
+import VerifyOTPScreen from './src/screens/VerifyOTP';
+import Onboarding1Screen from './src/screens/Onboarding1';
+import Onboarding2Screen from './src/screens/Onboarding2';
+import FindGroupScreen from './src/screens/FindGroup';
+import CreateGroupScreen from './src/screens/CreateGroup';
 // Define your stack navigation param types
 export type RootStackParamList = {
   Welcome: undefined;
-  Login: undefined;
-  Signup: undefined;
+  PhoneNumber: undefined;
+  Email: undefined;
   Main: undefined;
+  Name: undefined;
+  VerifyOTP: undefined;
+  Onboarding1: undefined;
+  Onboarding2: undefined;
+  FindGroup: undefined;
+  CreateGroup: undefined;
 };
 
-type AuthContextType = {
-  signIn: (token: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  signUp: (token: string) => Promise<void>;
-};
-
-// Create a context to provide auth functions
-export const AuthContext = React.createContext<AuthContextType>({} as AuthContextType);
 
 const Stack = createStackNavigator<RootStackParamList>();
 
+function AppNavigator() {
+  // Access userToken & isLoading from AuthContext
+  const { userToken, isLoading } = useContext(AuthContext);
+
+  if (isLoading) {
+    // Still checking session or loading initial data
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#A9411D" />
+      </View>
+    );
+  }
+
+  return (
+    <Stack.Navigator>
+      {userToken == null ? (
+        // Auth screens
+        <>
+          <Stack.Screen
+            name="Welcome"
+            component={WelcomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PhoneNumber"
+            component={PhoneNumberScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Email"
+            component={EmailScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Name"
+            component={NameScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="VerifyOTP"
+            component={VerifyOTPScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Onboarding1"
+            component={Onboarding1Screen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Onboarding2"
+            component={Onboarding1Screen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="FindGroup"
+            component={FindGroupScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CreateGroup"
+            component={CreateGroupScreen}
+            options={{ headerShown: false }}
+          />
+        </>
+      ) : (
+        // Main app once authenticated
+        <Stack.Screen
+          name="FindGroup"
+          component={FindGroupScreen}
+          options={{ headerShown: false }}
+        />
+        // <Stack.Screen
+        //   name="Main"
+        //   component={MainTabNavigator}
+        //   options={{ headerShown: false }}
+        // />
+      )}
+    </Stack.Navigator>
+  );
+}
+
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [userToken, setUserToken] = useState<string | null>(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
-  // Load custom fonts
   useEffect(() => {
     async function loadFonts() {
       try {
@@ -50,60 +134,11 @@ export default function App() {
         console.error('Error loading fonts:', error);
       }
     }
-
     loadFonts();
   }, []);
 
-  // Check if the user is logged in
-  useEffect(() => {
-    const bootstrapAsync = async () => {
-      let token = null;
-      try {
-        // Fetch the token from storage
-        token = await AsyncStorage.getItem('userToken');
-      } catch (e) {
-        // Restoring token failed
-        console.error('Failed to get token from storage', e);
-      }
-
-      // Set the token and update loading state
-      setUserToken(token);
-      setIsLoading(false);
-    };
-
-    bootstrapAsync();
-  }, []);
-
-  // Create auth context for global auth state management
-  const authContext = React.useMemo(() => ({
-    signIn: async (token: string) => {
-      try {
-        await AsyncStorage.setItem('userToken', token);
-        setUserToken(token);
-      } catch (e) {
-        console.error('Failed to save token', e);
-      }
-    },
-    signOut: async () => {
-      try {
-        await AsyncStorage.removeItem('userToken');
-        setUserToken(null);
-      } catch (e) {
-        console.error('Failed to remove token', e);
-      }
-    },
-    signUp: async (token: string) => {
-      try {
-        await AsyncStorage.setItem('userToken', token);
-        setUserToken(token);
-      } catch (e) {
-        console.error('Failed to save token', e);
-      }
-    },
-  }), []);
-
-  if (isLoading || !fontsLoaded) {
-    // Show a loading screen while checking authentication and loading fonts
+  if (!fontsLoaded) {
+    // Show a loading screen while fonts load
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#A9411D" />
@@ -112,39 +147,11 @@ export default function App() {
   }
 
   return (
-    <AuthContext.Provider value={authContext}>
+    <AuthProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          {userToken == null ? (
-            // Auth screens - shown when not logged in
-            <>
-              <Stack.Screen
-                name="Welcome"
-                component={WelcomeScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Signup"
-                component={SignupScreen}
-                options={{ headerShown: false }}
-              />
-            </>
-          ) : (
-            // Main app screens - shown when logged in
-            <Stack.Screen
-              name="Main"
-              component={MainTabNavigator}
-              options={{ headerShown: false }}
-            />
-          )}
-        </Stack.Navigator>
+        <AppNavigator />
       </NavigationContainer>
-    </AuthContext.Provider>
+    </AuthProvider>
   );
 }
 

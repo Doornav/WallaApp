@@ -8,35 +8,43 @@ import {
     Keyboard
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Ionicons } from '@expo/vector-icons';
-import { RootStackParamList, AuthContext } from '../../App';
+import { RootStackParamList } from '../../App';
+import { AuthContext } from '../contexts/AuthContext';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import { COLORS, TYPOGRAPHY, SPACING, FONTS } from '../styles/theme';
 
-type SignupScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Signup'>;
+type VerifyOTPScreenNavigationProp = StackNavigationProp<RootStackParamList, 'VerifyOTP'>;
 
 type Props = {
-    navigation: SignupScreenNavigationProp;
+    navigation: VerifyOTPScreenNavigationProp;
 };
 
 
-const Signup: React.FC<Props> = ({ navigation }) => {
-    const [phoneNumber, setPhoneNumber] = useState('');
+const VerifyOTPScreen: React.FC<Props> = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
-
-    const { signUp } = useContext(AuthContext);
+    const [error, setError] = useState("");
+    // Use phoneNumber from context instead of local state
+    const { OTP, setOTP, signIn } = useContext(AuthContext);
 
     const handleContinue = async () => {
+        const otpRegex = /^\d{6}$/;
+
+
+        // Basic validation
+        if (!OTP) {
+            setError("Phone number required");
+            return;
+        } else if (!otpRegex.test(OTP)) {
+            setError("Phone number is invalid");
+            return;
+        }
+
         setIsLoading(true);
         try {
-            // In a real app, you would verify phone/email here
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
-
-            // Mock token creation
-            const mockToken = 'mock-auth-token-' + Date.now();
-            await signUp(mockToken);
+            await signIn();
+            navigation.navigate("Onboarding1")
         } catch (error) {
             console.error('Signup error:', error);
         } finally {
@@ -44,7 +52,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
         }
     };
 
-    const handleSocialSignup = async (provider: 'google' | 'apple') => {
+
+    const handleSocialSignup = async (provider: 'google') => {
         // In a real app, you would implement social sign-in here
         console.log(`Signing up with ${provider}`);
     };
@@ -54,7 +63,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
             <SafeAreaView style={styles.container}>
                 {/* Using the Header component instead of the custom header */}
                 <Header
-                    title="Sign Up"
+                    title="Phone Number"
                     showSearchButton={false}
                     onBackPress={() => navigation.goBack()}
                 />
@@ -62,10 +71,11 @@ const Signup: React.FC<Props> = ({ navigation }) => {
 
                     <View style={{ marginBlock: 40 }}>
                         <TextInput
-                            placeholder="Phone number"
-                            value={phoneNumber}
-                            onChangeText={setPhoneNumber}
-                            keyboardType="phone-pad"
+                            placeholder="OTP: 6 digits"
+                            value={OTP}
+                            onChangeText={setOTP} // This will update the context
+                            keyboardType="decimal-pad"
+                            error={error}
                         />
                     </View>
 
@@ -148,4 +158,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Signup;
+export default VerifyOTPScreen;

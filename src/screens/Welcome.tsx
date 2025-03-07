@@ -32,16 +32,11 @@ const Welcome: React.FC<Props> = ({ navigation }) => {
                 </Text>
 
                 <View style={styles.buttonContainer}>
-                    <Button
-                        title="Log In"
-                        onPress={() => navigation.navigate('Login')}
-                        variant='primary'
-                    />
 
                     <Button
-                        title="Sign up"
+                        title="Get Started"
                         variant="secondary"
-                        onPress={() => navigation.navigate('Signup')}
+                        onPress={() => navigation.navigate('Name')}
 
                     />
                 </View>
